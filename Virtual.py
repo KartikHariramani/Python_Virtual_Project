@@ -3,6 +3,7 @@ import webbrowser
 import pyttsx3
 import pyjokes
 import os
+import time
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
@@ -21,20 +22,6 @@ def processCommand(command):
         webbrowser.open("https://www.youtube.com")
     elif "open chat" in command:
         webbrowser.open("https://chatgpt.com")
-    elif command.startswith("play"):
-        song = command.split(" ", 1)[1]
-        # Add your music library here
-        musicLibrary = {
-            "laal pari": "https://www.youtube.com/watch?v=KGn-erOG-Bs",
-            "Desi Kalakar":"https://www.youtube.com/watch?v=KhnVcAC5bIM",
-            "so high":"https://www.youtube.com/watch?v=GgmFC8y8q3k",
-            "taarak mehta":"https://www.youtube.com/watch?v=vyclvUeQ4bo"
-        }
-        link = musicLibrary.get(song, "")
-        if link:
-            webbrowser.open(link)
-        else:
-            speak("Song not found in library.")
     elif "joke" in command:
         joke = pyjokes.get_joke()
         speak(joke)
@@ -51,6 +38,16 @@ def processCommand(command):
     elif "tushar" in command:
         intro3='''Tushar Hariramani is a driven young businessman who has seamlessly blended his academic foundation with entrepreneurial ventures. Holding a Bachelor of Commerce (BCom) degree, he possesses a solid understanding of business principles and financial management. Tushar's entrepreneurial spirit is evident in his active involvement in various business initiatives, where he applies his knowledge to drive growth and innovation. His commitment to continuous learning and adaptability in the ever-evolving business landscape underscores his potential for success in the competitive market'''
         speak(intro3)
+    elif "telegram" in command:
+        webbrowser.open("https://web.telegram.org/k/")
+    elif "instagram" in command:
+        webbrowser.open("https://www.instagram.com/")
+    elif "whatsapp" in command:
+        webbrowser.open("https://web.whatsapp.com/")
+    elif "calendar" in command:
+        webbrowser.open("https://calendar.google.com/")
+    elif "gmail" in command:
+        webbrowser.open("https://mail.google.com/")
     else:
         # Fallback: Treat any other input as a Google search
         speak(f"Searching Google for {command}")
@@ -67,14 +64,18 @@ if __name__ == "__main__":
                 word = recognizer.recognize_google(audio)
 
                 if word.lower() == "virtual":
-                    speak("Hey Kamal, welcome again. What can I help you with today?")
                     print("Virtual Activated.")
-                    speak("Listening for your command...")
+                    engine.say("Hey Kamal, welcome again. What can I help you with today?")
 
                     with sr.Microphone() as source:
                         recognizer.adjust_for_ambient_noise(source, duration=0.5)
-                        audio = recognizer.listen(source)
+
+                        print("Listening for command...")
+                        audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+
                         command = recognizer.recognize_google(audio)
+                        print("You said:", command)
+
                         processCommand(command)
 
         except sr.UnknownValueError:
